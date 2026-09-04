@@ -12,4 +12,3 @@ r = requests.get(
 
 print(r.status_code)
 print(r.text[:1000])
-`

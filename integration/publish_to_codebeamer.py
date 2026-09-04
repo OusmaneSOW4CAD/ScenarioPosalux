@@ -1,49 +1,88 @@
 import os
 import json
+import random
 import requests
 
 BASE_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb/api/v3"
 
+TEST_SET_RUN_ID = 33898
+
 USER = os.environ["CODEBEAMER_USER"]
 PASSWORD = os.environ["CODEBEAMER_PASSWORD"]
 
-TEST_SET_RUN_ID = 33898
+# Récupération du Test Set Run
+response = requests.get(
+    f"{BASE_URL}/items/{TEST_SET_RUN_ID}",
+    auth=(USER, PASSWORD),
+    headers={"accept": "application/json"}
+)
 
-with open("results.json") as f:
-    results = json.load(f)
+response.raise_for_status()
+
+testrun = response.json()
 
 updates = []
 
-for item in results:
+# Recherche de tous les Test Cases du Test Set
+for field in testrun["customFields"]:
 
-    updates.append(
-        {
-            "result": item["result"],
-            "conclusion":
-                f"Stress={item['stress']} MPa",
-            "runTime": 10,
-            "testCaseReference": {
-                "id": item["testCaseId"],
-                "name": item["testCaseName"],
-                "type": "TrackerItemReference",
-                "commonItemId": item["testCaseId"],
-                "trackerKey": "TESTCASE",
-                "trackerTypeId": 16,
-                "uri": f"/item/{item['testCaseId']}"
+    if field["name"] != "Test Cases":
+        continue
+
+    for row in field["values"]:
+
+        testcase = row[0]["values"][0]
+
+        test_case_id = testcase["id"]
+        test_case_name = testcase["name"]
+
+        # Simulation ANSYS
+        stress = round(random.uniform(100, 250), 2)
+        limit = 200
+
+        result = (
+            "PASSED"
+            if stress <= limit
+            else "FAILED"
+        )
+
+        updates.append(
+            {
+                "result": result,
+                "conclusion": (
+                    f"Simulation virtuelle\n"
+                    f"Stress={stress} MPa\n"
+                    f"Limit={limit} MPa"
+                ),
+                "runTime": 10,
+                "testCaseReference": {
+                    "id": test_case_id,
+                    "name": test_case_name,
+                    "type": "TrackerItemReference",
+                    "commonItemId": test_case_id,
+                    "trackerKey": "TESTCASE",
+                    "trackerTypeId": 16,
+                    "uri": f"/item/{test_case_id}"
+                }
             }
-        }
-    )
+        )
 
 payload = {
     "parentResultPropagation": True,
     "updateRequestModels": updates
 }
 
+print(json.dumps(payload, indent=2))
+
 response = requests.put(
     f"{BASE_URL}/testruns/{TEST_SET_RUN_ID}",
     json=payload,
-    auth=(USER, PASSWORD)
+    auth=(USER, PASSWORD),
+    headers={
+        "accept": "application/json",
+        "Content-Type": "application/json"
+    }
 )
 
-print(response.status_code)
+print("STATUS =", response.status_code)
 print(response.text)

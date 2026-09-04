@@ -32,10 +32,11 @@ url = (
     f"{TEST_RUN_ID}/result"
 )
 
-response = requests.put(
+response = requests.post(
     url,
     json=payload,
     auth=(USER, PASSWORD)
+)
 )
 
 print(response.status_code)

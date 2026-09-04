@@ -1,15 +1,47 @@
+import json
 import requests
+import os
 
-USER = "user_posalux"
-PASSWORD = "5nZ0i6SzyZgVbutlonger"
+CODEBEAMER_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb/api/v3"
+TEST_RUN_ID = 33902
 
+USER = os.environ["CODEBEAMER_USER"]
+PASSWORD = os.environ["CODEBEAMER_PASSWORD"]
 
-url = "https://pdm13-1-codebeamer.connexateurs.com/cb/rest"
+with open("result.json") as f:
+    data = json.load(f)
 
-r = requests.get(
+stress = data["max_stress"]
+limit = data["limit"]
+
+result = "PASSED" if stress <= limit else "FAILED"
+
+payload = {
+    "parentResultPropagation": True,
+    "updateRequestModels": [
+        {
+            "conclusion": (
+                f"Simulation virtuelle ANSYS\n"
+                f"Stress = {stress} MPa\n"
+                f"Limite = {limit} MPa"
+            ),
+            "result": result,
+            "runTime": 10
+        }
+    ]
+}
+
+url = f"{CODEBEAMER_URL}/testruns/{TEST_RUN_ID}"
+
+response = requests.put(
     url,
-    auth=(USER, PASSWORD)
+    json=payload,
+    auth=(USER, PASSWORD),
+    headers={
+        "accept": "application/json",
+        "Content-Type": "application/json"
+    }
 )
 
-print("STATUS =", r.status_code)
-print(r.text)
+print("Status :", response.status_code)
+print(response.text)

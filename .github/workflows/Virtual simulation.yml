@@ -25,7 +25,7 @@ jobs:
           pip install requests
 
       - name: Generate Fake ANSYS Result
-        run: python fake_ansys.py
+        run: python simulations/fake_ansys.py
 
       - name: Publish to Codebeamer
         env:

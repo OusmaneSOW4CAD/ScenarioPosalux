@@ -31,7 +31,7 @@ url = (
     f"/rest/testmanagement/testrun/"
     f"{TEST_RUN_ID}/result"
 )
-
+print("URL =", url)
 response = requests.post(
     url,
     json=payload,

@@ -2,9 +2,9 @@ import os
 import json
 import requests
 
-# =====================================
+# ==================================================
 # CONFIGURATION
-# =====================================
+# ==================================================
 
 BASE_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb/api/v3"
 
@@ -14,11 +14,11 @@ TEST_CASE_ID = 1218
 USER = os.environ["CODEBEAMER_USER"]
 PASSWORD = os.environ["CODEBEAMER_PASSWORD"]
 
-# =====================================
+# ==================================================
 # LECTURE RESULTAT SIMULATION
-# =====================================
+# ==================================================
 
-with open("result.json", "r") as f:
+with open("result.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
 stress = data["max_stress"]
@@ -26,9 +26,9 @@ limit = data["limit"]
 
 result = "PASSED" if stress <= limit else "FAILED"
 
-# =====================================
-# PAYLOAD CODEBEAMER
-# =====================================
+# ==================================================
+# PAYLOAD
+# ==================================================
 
 payload = {
     "parentResultPropagation": True,
@@ -55,9 +55,9 @@ payload = {
     ]
 }
 
-# =====================================
-# APPEL API
-# =====================================
+# ==================================================
+# APPEL API CODEBEAMER
+# ==================================================
 
 url = f"{BASE_URL}/testruns/{TEST_SET_RUN_ID}"
 
@@ -85,47 +85,49 @@ print("STATUS")
 print(response.status_code)
 
 print("=" * 80)
-print("HEADERS")
-print(dict(response.headers))
-
-print("=" * 80)
-print("BODY")
+print("RESPONSE")
 
 try:
     print(json.dumps(response.json(), indent=2))
 except Exception:
     print(response.text)
 
-print("=" * 80)
-
-# =====================================
-# SI ERREUR : RECUPERER LE TEST RUN
-# =====================================
+# ==================================================
+# DIAGNOSTIC EN CAS D'ERREUR
+# ==================================================
 
 if response.status_code != 200:
 
     print("\n")
-    print("RECUPERATION DU TEST RUN")
+    print("=" * 80)
+    print("DIAGNOSTIC TEST RUN")
     print("=" * 80)
 
-    get_url = f"{BASE_URL}/items/{TEST_SET_RUN_ID}"
+    diagnostic_url = f"{BASE_URL}/items/{TEST_SET_RUN_ID}"
 
-    r = requests.get(
-        get_url,
+    diagnostic_response = requests.get(
+        diagnostic_url,
         auth=(USER, PASSWORD),
-        headers={"accept": "application/json"}
+        headers={
+            "accept": "application/json"
+        },
+        timeout=30
     )
 
-    print("GET STATUS:", r.status_code)
+    print("Diagnostic status :", diagnostic_response.status_code)
 
     try:
-        data = r.json()
+        diagnostic_data = diagnostic_response.json()
 
-        print("ID:", data.get("id"))
-        print("TYPE:", data.get("typeName"))
-        print("NAME:", data.get("name"))
-        print("TRACKER:", data.get("tracker", {}).get("name"))
+        print("ID :", diagnostic_data.get("id"))
+        print("Nom :", diagnostic_data.get("name"))
+        print("Type :", diagnostic_data.get("typeName"))
+
+        if "tracker" in diagnostic_data:
+            print(
+                "Tracker :",
+                diagnostic_data["tracker"].get("name")
+            )
 
     except Exception:
-        print(r.text)
-`
+        print(diagnostic_response.text)

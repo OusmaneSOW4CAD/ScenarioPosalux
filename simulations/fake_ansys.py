@@ -1,7 +1,7 @@
 import json
 import random
 
-stress = round(random.uniform(150, 250), 2)
+stress = round(random.uniform(0, 250), 2)
 
 result = {
     "max_stress": stress,

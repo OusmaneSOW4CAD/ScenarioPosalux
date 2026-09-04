@@ -37,7 +37,7 @@ response = requests.post(
     json=payload,
     auth=(USER, PASSWORD)
 )
-)
+
 
 print(response.status_code)
 print("Response :", response.text)

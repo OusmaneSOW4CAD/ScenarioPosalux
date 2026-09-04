@@ -5,8 +5,8 @@ CODEBEAMER_URL = "https://pdm13-1-codebeamer.connexateurs.com/"
 USER = "user_posalux"
 PASSWORD = "5nZ0i6SzyZgVbutlonger"
 
-TEST_RUN_ID = 5001
-TEST_CASE_RUN_ID = 5002
+TEST_RUN_ID = 33902
+TEST_CASE_RUN_ID = 1218
 
 with open("result.json") as f:
     data = json.load(f)

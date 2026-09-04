@@ -1,43 +1,17 @@
-import json
 import requests
 
-CODEBEAMER_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb"
-USER = "user_posalux"
-PASSWORD = "5nZ0i6SzyZgVbutlonger"
+urls = [
+    "https://pdm13-1-codebeamer.connexateurs.com/cb/rest",
+    "https://pdm13-1-codebeamer.connexateurs.com/cb/rest/user",
+    "https://pdm13-1-codebeamer.connexateurs.com/cb/rest/project",
+    "https://pdm13-1-codebeamer.connexateurs.com/cb/rest/configuration"
+]
 
-TEST_RUN_ID = 33902
-TEST_CASE_RUN_ID = 1218
-
-with open("result.json") as f:
-    data = json.load(f)
-
-status = (
-    "PASSED"
-    if data["max_stress"] <= data["limit"]
-    else "FAILED"
-)
-
-payload = {
-    str(TEST_CASE_RUN_ID): {
-        "success": status,
-        "conclusion":
-            f"Stress={data['max_stress']} MPa "
-            f"Limit={data['limit']} MPa"
-    }
-}
-
-url = (
-    f"{CODEBEAMER_URL}"
-    f"/rest/testmanagement/testrun/"
-    f"{TEST_RUN_ID}/result"
-)
-print("URL =", url)
-response = requests.post(
-    url,
-    json=payload,
-    auth=(USER, PASSWORD)
-)
-
-
-print(response.status_code)
-print("Response :", response.text)
+for url in urls:
+    try:
+        r = requests.get(url, timeout=10)
+        print(url)
+        print(r.status_code)
+        print("-" * 50)
+    except Exception as e:
+        print(url, e)

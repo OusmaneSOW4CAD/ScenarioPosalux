@@ -5,7 +5,7 @@ import requests
 
 BASE_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb/api/v3"
 
-TEST_SET_RUN_ID = 33898
+TEST_SET_RUN_ID = 33912
 
 USER = os.environ["CODEBEAMER_USER"]
 PASSWORD = os.environ["CODEBEAMER_PASSWORD"]

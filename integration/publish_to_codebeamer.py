@@ -1,7 +1,7 @@
 import json
 import requests
 
-CODEBEAMER_URL = "https://pdm13-1-codebeamer.connexateurs.com/"
+CODEBEAMER_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb"
 USER = "user_posalux"
 PASSWORD = "5nZ0i6SzyZgVbutlonger"
 

@@ -39,3 +39,4 @@ response = requests.put(
 )
 
 print(response.status_code)
+print("Response :", response.text)

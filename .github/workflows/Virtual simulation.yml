@@ -16,8 +16,8 @@ jobs:
       with:
         python-version: "3.11"
 
-    - run: python fake_ansys.py
+    - run: python simulations/fake_ansys.py
 
     - run: python evaluate.py
 
-    - run: python publish_to_codebeamer.py
+    - run: python integration/publish_to_codebeamer.py

@@ -1,14 +1,14 @@
 import json
-import requests
 import os
+import requests
 
-CODEBEAMER_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb/api/v3"
+BASE_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb/api/v3"
 TEST_RUN_ID = 33902
 
 USER = os.environ["CODEBEAMER_USER"]
 PASSWORD = os.environ["CODEBEAMER_PASSWORD"]
 
-with open("result.json") as f:
+with open("result.json", "r") as f:
     data = json.load(f)
 
 stress = data["max_stress"]
@@ -20,18 +20,26 @@ payload = {
     "parentResultPropagation": True,
     "updateRequestModels": [
         {
+            "testCaseReference": {
+                "id": 1218
+            },
+            "result": result,
             "conclusion": (
                 f"Simulation virtuelle ANSYS\n"
-                f"Stress = {stress} MPa\n"
-                f"Limite = {limit} MPa"
+                f"Stress={stress} MPa\n"
+                f"Limite={limit} MPa\n"
+                f"Résultat={result}"
             ),
-            "result": result,
             "runTime": 10
         }
     ]
 }
 
-url = f"{CODEBEAMER_URL}/testruns/{TEST_RUN_ID}"
+url = f"{BASE_URL}/testruns/{TEST_RUN_ID}"
+
+print("URL =", url)
+print("Payload =")
+print(json.dumps(payload, indent=2))
 
 response = requests.put(
     url,
@@ -44,4 +52,8 @@ response = requests.put(
 )
 
 print("Status :", response.status_code)
-print(response.text)
+
+try:
+    print(json.dumps(response.json(), indent=2))
+except Exception:
+    print(response.text)

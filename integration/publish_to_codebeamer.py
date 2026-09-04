@@ -8,7 +8,7 @@ import requests
 
 BASE_URL = "https://pdm13-1-codebeamer.connexateurs.com/cb/api/v3"
 
-TEST_SET_RUN_ID = 33898
+TEST_SET_RUN_ID = 33904
 TEST_CASE_ID = 1218
 TEST_CASE_ID = 1216
 

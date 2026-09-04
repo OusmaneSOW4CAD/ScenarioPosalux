@@ -20,9 +20,6 @@ payload = {
     "parentResultPropagation": True,
     "updateRequestModels": [
         {
-            "testCaseReference": {
-                "id": 1218
-            },
             "result": result,
             "conclusion": (
                 f"Simulation virtuelle ANSYS\n"

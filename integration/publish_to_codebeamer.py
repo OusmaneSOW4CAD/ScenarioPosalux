@@ -3,7 +3,7 @@ import requests
 USER = "user_posalux"
 PASSWORD = "5nZ0i6SzyZgVbutlonger"
 
-url = "https://pdm13-1-codebeamer.connexateurs.com/cb/rest/project"
+url = "https://pdm13-1-codebeamer.connexateurs.com/cb/v3"
 
 r = requests.get(
     url,
